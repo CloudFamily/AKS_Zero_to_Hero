@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld
+  labels:
+    app: helloworld
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: helloworld
+      labels:
+        app: helloworld
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": windows
+      containers:
+      - name: helloworld
+        image: pixelrobot/containerplay:v2
+        resources:
+          limits:
+            cpu: 1
+            memory: 800m
+          requests:
+            cpu: .1
+            memory: 300m
+        ports:
+          - containerPort: 80
+  selector:
+    matchLabels:
+      app: helloworld
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    app: helloworld
